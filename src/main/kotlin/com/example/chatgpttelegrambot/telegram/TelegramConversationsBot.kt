@@ -7,7 +7,6 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
-import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -18,13 +17,18 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 
 @Component
-class TelegramConversationsBot(
+final class TelegramConversationsBot(
     @Value("\${telegram.bot-token}")
     private val token: String,
     @Value("\${telegram.bot-name}")
     private val botName: String,
     private val openAI: OpenAI
 ) : TelegramLongPollingBot(token) {
+
+    init {
+        val botsApi =  TelegramBotsApi(DefaultBotSession::class.java)
+        botsApi.registerBot(this)
+    }
 
     override fun getBotUsername(): String {
         return botName
@@ -56,11 +60,5 @@ class TelegramConversationsBot(
         val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
         val chatChoice = completion.choices[0]
         return chatChoice.message?.content
-    }
-
-    @PostConstruct
-    private fun initBot() {
-        val botsApi =  TelegramBotsApi(DefaultBotSession::class.java)
-        botsApi.registerBot(this)
     }
 }

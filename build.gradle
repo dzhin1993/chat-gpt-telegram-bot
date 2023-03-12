@@ -32,6 +32,10 @@ tasks.withType(KotlinCompile) {
     }
 }
 
+bootRun {
+    systemProperties System.properties
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
