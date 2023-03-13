@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class TelegramConfig(
+class OpenAIConfig(
     @Value("\${open-ai.api-key}")
     private val apiKey: String,
 ) {
